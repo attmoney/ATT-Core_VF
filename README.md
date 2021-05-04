@@ -55,8 +55,9 @@ The oracle calculates a rate for  ATT /USD based on a  ATT /BNB and BNB/USD pool
 
 # Attributions
 
-The project is inspired by Ampleforth https://github.com/ampleforth/ & https://www.antiample.org/
-Project structure was forked from https://github.com/Ditto-money
+1. The project is inspired by Ampleforth https://github.com/ampleforth/ & https://www.antiample.org/
+
+2. Project was forked from https://github.com/Ditto-money
 
 # License
 
