@@ -7,6 +7,13 @@
 # ATT Money
 
  ATT  money is an experimental protocol. It is  elastic supply token with negative rebases (only when price deflates below US$1). The total supply of  ATT  is not fixed and also does not adjusts on a regular basis. These supply adjustments, called "rebases", are done in such a way that users’ proportional holdings don’t change and thus aren’t diluted. Rebases are performed to achieve a specific target base price, with the idea being that a token’s base price is always maintained i.e, US$1 or above. 
+ 
+# Deployment
+
+```
+1. ATT Token : 0xc667dd95f5f3a2919dfc4c80c68753c0c6accbd0
+	bscscan link : https://bscscan.com/address/0xc667dd95f5f3a2919dfc4c80c68753c0c6accbd0
+```
 
 # Architecture
 
