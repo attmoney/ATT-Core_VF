@@ -759,12 +759,12 @@ contract PledgeFarm is Ownable {
     /**
      * @dev Withdraw LP tokens from Pledge Farm.
      * @param _pid ID of a specific LP token pool. See index of PoolInfo[].
-     * @param _amount Amount of LP tokens to withdraw.
      */
-    function withdraw(uint256 _pid, uint256 _amount) public {
+    function withdraw(uint256 _pid) public {
+        require(block.number > endBlock, "Wait for farming endblock");
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
-        require(user.amount >= _amount, "Can't withdraw more token than previously deposited.");
+        uint256 _amount = user.amount;
         updatePool(_pid);
         uint256 pending = user.amount.mul(pool.accAttPerShare).div(1e12).sub(user.attRewardDebt);
         uint256 pendingBusd = user.amount.mul(pool.accBusdPerShare).div(1e12).sub(user.busdRewardDebt);
