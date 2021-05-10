@@ -1,3 +1,4 @@
+
 // File: @openzeppelin/contracts/token/ERC20/IERC20.sol
 
 // SPDX-License-Identifier: MIT
@@ -759,12 +760,13 @@ contract ZeldaV2 is Ownable, Pausable {
     using SafeERC20 for IERC20;
 
     IERC20 public att;
+    uint256 public winCounter;
     uint256 private totalAllocation;
     uint256 private nextAnnouncementDelay;
     uint256 public lastAnnouncementBlock;
     uint256 public rewardScheme;
 
-    address[] public winners;
+    mapping (uint256 => address) public winners;
     mapping(address => uint256) private userRewards;
     mapping(address => bool) public nodes;
 
@@ -773,11 +775,13 @@ contract ZeldaV2 is Ownable, Pausable {
         lastAnnouncementBlock = block.number;
         nextAnnouncementDelay = 1200; // ~ 1hr
         rewardScheme = 50000000000; //$50
+        winCounter = 1;
     }
 
     event WinnerAnnouncement(address indexed user, uint256 amount);
     event Claim(address indexed user, uint256 amount);
     event RewardSchemeUpdate( uint256 amount);
+    event NodeUpdate(address indexed node, bool status, uint256 time);
 
     modifier onlyNode() {
         require(nodes[msg.sender] == true, "ZELDA: AUTH_FAILED");
@@ -794,14 +798,14 @@ contract ZeldaV2 is Ownable, Pausable {
         onlyNode
         whenNotPaused
     {
-        require(lastAnnouncementBlock.add(nextAnnouncementDelay) < block.number, "ZELDA: WAIT_FOR_COOLDOWN");
-            
+        require(getNextAnnouncementBlock() < block.number, "ZELDA: WAIT_FOR_COOLDOWN");
             userRewards[_winner] = userRewards[_winner].add(
                 rewardScheme
             );
             totalAllocation = totalAllocation.add(rewardScheme);
-        
+        winners[winCounter] = _winner;
         lastAnnouncementBlock = block.number;
+        winCounter++;
         emit WinnerAnnouncement(_winner, rewardScheme);
     }
 
@@ -832,6 +836,7 @@ contract ZeldaV2 is Ownable, Pausable {
      */
     function setNode(address _node, bool _status) external onlyOwner {
         nodes[_node] = _status;
+        emit NodeUpdate(_node, _status, block.timestamp);
     }
 
     /**
@@ -858,12 +863,12 @@ contract ZeldaV2 is Ownable, Pausable {
      * @dev Returns user's claimable ATT balance.
      * @param _who user's wallet address.
      */
-    function pendingReward(address _who) public view returns (uint256) {
+    function getPendingReward(address _who) public view returns (uint256) {
         return userRewards[_who];
     }
 
   /**
-     * @dev Returns last zelda announcement count.
+     * @dev Returns total reward distributed / allocated.
      */
     function getTotalAllocation() external view returns (uint256) {
         return totalAllocation;
@@ -879,7 +884,7 @@ contract ZeldaV2 is Ownable, Pausable {
     /**
      * @dev Returns next zelda announcement block.
      */
-    function getNextAnnouncementBlock() external view returns (uint256) {
+    function getNextAnnouncementBlock() public view returns (uint256) {
         return lastAnnouncementBlock.add(nextAnnouncementDelay);
     }
 
