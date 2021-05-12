@@ -20,6 +20,10 @@
 ```
 1. ATT Token : 0xc667dd95f5f3a2919dfc4c80c68753c0c6accbd0
 	bscscan link : https://bscscan.com/address/0xc667dd95f5f3a2919dfc4c80c68753c0c6accbd0
+	
+2. Chainlink BUSD/BNB price oracle : 0x8582Bfd13C1896B9F2daFb6824DA67ad6eFe06F3
+	bscscan link : https://bscscan.com/address/0x8582Bfd13C1896B9F2daFb6824DA67ad6eFe06F3
+	
 ```
 
 # Architecture
