@@ -37,7 +37,7 @@ contract PriceConsumerV3 {
     AggregatorV3Interface internal priceFeed;
 
     constructor() public {
-        priceFeed = AggregatorV3Interface(0x0630521aC362bc7A19a4eE44b57cE72Ea34AD01c);
+        priceFeed = AggregatorV3Interface(0x87Ea38c9F24264Ec1Fff41B04ec94a97Caf99941);
     }
 
     /**
