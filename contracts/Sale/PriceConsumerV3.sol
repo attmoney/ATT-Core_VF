@@ -7,9 +7,6 @@ interface AggregatorV3Interface {
   function description() external view returns (string memory);
   function version() external view returns (uint256);
 
-  // getRoundData and latestRoundData should both raise "No data present"
-  // if they do not have data to report, instead of returning unset values
-  // which could be misinterpreted as actual reported values.
   function getRoundData(uint80 _roundId)
     external
     view
@@ -33,6 +30,8 @@ interface AggregatorV3Interface {
 
 }
 
+// Returns USD/BNB data from chainlink
+
 contract PriceConsumerV3 {
 
     AggregatorV3Interface internal priceFeed;
@@ -45,13 +44,7 @@ contract PriceConsumerV3 {
      * Returns the latest price
      */
     function getLatestPrice() public view returns (int) {
-        (
-            uint80 roundID, 
-            int price,
-            uint startedAt,
-            uint timeStamp,
-            uint80 answeredInRound
-        ) = priceFeed.latestRoundData();
+        (, int price, , ,) = priceFeed.latestRoundData();
         return price;
     }
 }
