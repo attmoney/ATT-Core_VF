@@ -739,7 +739,7 @@ contract PledgeFarm is Ownable {
      * @param _amount Amount of LP tokens to deposit.
      */
     function deposit(uint256 _pid, uint256 _amount) public {
-        require(startBlock != 0, "ERR: WAIT_FOR_FARM_TO_START");
+        require(hasStarted() != false, "ERR: WAIT_FOR_FARM_TO_START");
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
@@ -762,7 +762,7 @@ contract PledgeFarm is Ownable {
      * @param _pid ID of a specific LP token pool. See index of PoolInfo[].
      */
     function withdraw(uint256 _pid) public {
-        require(startBlock != 0, "ERR: WAIT_FOR_FARM_TO_START");
+        require(hasStarted() != false, "ERR: WAIT_FOR_FARM_TO_START");
         require(block.number > endBlock, "Wait for farming endblock");
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
@@ -827,6 +827,18 @@ contract PledgeFarm is Ownable {
      */
     function poolLength() external view returns (uint256) {
         return poolInfo.length;
+    }
+    
+    
+    /**
+     * @dev Views farm initiation state
+     * @return ttrue/false .
+     */
+    function hasStarted() public view returns (bool) {
+        if(startBlock != 0){
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -900,6 +912,7 @@ contract PledgeFarm is Ownable {
      * @return Start block number.
      */
     function setStartBlock(uint256 _startBlock, uint256 _endBlock) external onlyOwner returns (uint256) {
+        require(startBlock == 0, "ERR: FARM_ALREADY_STARTED");
         startBlock = _startBlock;
         endBlock = _endBlock;
         return startBlock;
