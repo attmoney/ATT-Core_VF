@@ -616,13 +616,13 @@ contract PledgeFarm is Ownable {
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
 
-    constructor(IERC20 _ATT, IERC20 _BUSD, uint256 _attPerBlock, uint256 _busdPerBlock, uint256 _startBlock, uint256 _endBlock) public {
+    constructor(IERC20 _ATT, IERC20 _BUSD, uint256 _attPerBlock, uint256 _busdPerBlock) public {
         ATT = _ATT;
         BUSD = _BUSD;
         attPerBlock = _attPerBlock;
         busdPerBlock = _busdPerBlock;
-        startBlock = _startBlock;
-        endBlock = _endBlock;
+        startBlock = 0;
+        endBlock = 0;
     }
 
     /**
@@ -739,6 +739,7 @@ contract PledgeFarm is Ownable {
      * @param _amount Amount of LP tokens to deposit.
      */
     function deposit(uint256 _pid, uint256 _amount) public {
+        require(startBlock != 0, "ERR: WAIT_FOR_FARM_TO_START");
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
@@ -761,6 +762,7 @@ contract PledgeFarm is Ownable {
      * @param _pid ID of a specific LP token pool. See index of PoolInfo[].
      */
     function withdraw(uint256 _pid) public {
+        require(startBlock != 0, "ERR: WAIT_FOR_FARM_TO_START");
         require(block.number > endBlock, "Wait for farming endblock");
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
@@ -891,6 +893,16 @@ contract PledgeFarm is Ownable {
         require(_endBlock > block.number, "Block needs to be in the future.");
         endBlock = _endBlock;
         return endBlock;
+    }
+
+    /**
+     * @dev Initiates farming.
+     * @return Start block number.
+     */
+    function setStartBlock(uint256 _startBlock, uint256 _endBlock) external onlyOwner returns (uint256) {
+        startBlock = _startBlock;
+        endBlock = _endBlock;
+        return startBlock;
     }
 
 }
