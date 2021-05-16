@@ -376,7 +376,7 @@ contract Master is Ownable {
     bool public rebaseLocked; 
 
     constructor(address _att) public {
-        deviationThreshold = 5 * 10 ** (DECIMALS-2);
+        deviationThreshold = 1 * 10 ** (DECIMALS-2);
 
         rebaseCooldown = 4 hours;
         lastRebaseTimestampSec = 0;
