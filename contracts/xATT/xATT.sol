@@ -879,10 +879,11 @@ contract TokenPool is Ownable {
 // xATT token with Governance.
 contract xATT is BEP20('xATT', 'xATT') {
     
-    BEP20 att = BEP20(0x0000000000000000000000000000000000000000);
+    BEP20 att;
     TokenPool attPool;
     
-    constructor() public {
+    constructor(address _att) public {
+        att = BEP20(_att);
         attPool = new TokenPool(att);
     }
     
