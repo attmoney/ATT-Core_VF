@@ -847,6 +847,7 @@ contract LiquidFarm is Ownable {
      * @return Start block number.
      */
     function setStartBlock(uint256 _startBlock, uint256 _endBlock) external onlyOwner returns (uint256) {
+        require(startBlock == 0, "ERR: FARM_ALREADY_STARTED");
         startBlock = _startBlock;
         endBlock = _endBlock;
         return startBlock;
