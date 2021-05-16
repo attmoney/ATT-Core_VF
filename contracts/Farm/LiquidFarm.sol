@@ -724,7 +724,7 @@ contract LiquidFarm is Ownable {
      * @param _amount Amount of LP tokens to deposit.
      */
     function deposit(uint256 _pid, uint256 _amount) public {
-        require(startBlock != 0, "ERR: WAIT_FOR_FARM_TO_START");
+        require(hasStarted() != false, "ERR: WAIT_FOR_FARM_TO_START");
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
@@ -744,7 +744,7 @@ contract LiquidFarm is Ownable {
      * @param _amount Amount of LP tokens to withdraw.
      */
     function withdraw(uint256 _pid, uint256 _amount) public {
-        require(startBlock != 0, "ERR: WAIT_FOR_FARM_TO_START");
+        require(hasStarted() != false, "ERR: WAIT_FOR_FARM_TO_START");
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "Can't withdraw more token than previously deposited.");
@@ -790,6 +790,17 @@ contract LiquidFarm is Ownable {
      */
     function poolLength() external view returns (uint256) {
         return poolInfo.length;
+    }
+
+    /**
+     * @dev Views farm initiation state
+     * @return ttrue/false .
+     */
+    function hasStarted() public view returns (bool) {
+        if(startBlock != 0){
+            return true;
+        }
+        return false;
     }
     
     /**
