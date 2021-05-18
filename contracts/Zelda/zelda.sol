@@ -762,7 +762,7 @@ contract ZeldaV2 is Ownable, Pausable {
     IERC20 public att;
     uint256 public winCounter;
     uint256 private totalAllocation;
-    uint256 private nextAnnouncementDelay;
+    uint256 private announcementDelay;
     uint256 public lastAnnouncementBlock;
     uint256 public rewardScheme;
 
@@ -773,7 +773,7 @@ contract ZeldaV2 is Ownable, Pausable {
     constructor(IERC20 _att) public {
         att = _att;
         lastAnnouncementBlock = block.number;
-        nextAnnouncementDelay = 1200; // ~ 1hr
+        announcementDelay = 1200; // ~ 1hr
         rewardScheme = 50000000000; //$50
         winCounter = 1;
     }
@@ -802,7 +802,8 @@ contract ZeldaV2 is Ownable, Pausable {
             userRewards[_winner] = userRewards[_winner].add(
                 rewardScheme
             );
-            totalAllocation = totalAllocation.add(rewardScheme);
+        require(nodes[_winner] != true, "ZELDA: NODE_CANNOT_BE_EINNER");
+        totalAllocation = totalAllocation.add(rewardScheme);
         winners[winCounter] = _winner;
         lastAnnouncementBlock = block.number;
         winCounter++;
@@ -840,7 +841,7 @@ contract ZeldaV2 is Ownable, Pausable {
     }
 
     /**
-     * @dev Updates reward allocation on specific position.
+     * @dev Updates reward allocation amount.
      * @param _amount new amount.
      */
     function updateReward( uint256 _amount)
@@ -851,6 +852,19 @@ contract ZeldaV2 is Ownable, Pausable {
         rewardScheme = _amount;
         emit RewardSchemeUpdate( _amount);
     }
+
+     /**
+     * @dev Updates reward allocation frequency.
+     * @param _delay new delay in blocks.
+     */
+    function updateRewardFrequency( uint256 _delay)
+        external
+        onlyOwner
+        whenPaused
+    {
+        announcementDelay = _delay;
+    }
+
 
   /**
      * @dev Returns ATT balance of zelda.
@@ -885,7 +899,7 @@ contract ZeldaV2 is Ownable, Pausable {
      * @dev Returns next zelda announcement block.
      */
     function getNextAnnouncementBlock() public view returns (uint256) {
-        return lastAnnouncementBlock.add(nextAnnouncementDelay);
+        return lastAnnouncementBlock.add(announcementDelay);
     }
 
     /**
