@@ -766,7 +766,7 @@ contract ZeldaV2 is Ownable, Pausable {
     uint256 public lastAnnouncementBlock;
     uint256 public rewardScheme;
 
-    mapping (uint256 => address) public winners;
+    mapping (uint256 => address) private winners;
     mapping(address => uint256) private userRewards;
     mapping(address => bool) public nodes;
 
@@ -871,6 +871,21 @@ contract ZeldaV2 is Ownable, Pausable {
      */
     function balance() public view returns (uint256) {
         return att.balanceOf(address(this));
+    }
+
+    /**
+     * @dev Returns relayer node status.
+     */
+    function getNode(address _node) public view returns (bool) {
+        return nodes[_node];
+    }
+
+    /**
+     * @dev Returns winner stat at specific position.
+     */
+    function getWinners(uint256 _position) public view returns (address) {
+        require(_position >= 0 , "ZELDA: INVALID_POSITION");
+        return winners[_position];
     }
 
   /**
