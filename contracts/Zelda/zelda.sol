@@ -883,8 +883,7 @@ contract ZeldaV2 is Ownable, Pausable {
     /**
      * @dev Returns winner stat at specific position.
      */
-    function getWinners(uint256 _position) public view returns (address) {
-        require(_position >= 0 , "ZELDA: INVALID_POSITION");
+    function getWinner(uint256 _position) public view returns (address) {
         return winners[_position];
     }
 
